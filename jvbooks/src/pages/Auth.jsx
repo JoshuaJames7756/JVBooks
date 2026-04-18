@@ -1,35 +1,32 @@
 // src/pages/Auth.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate, Link }   from 'react-router-dom'
-import { supabase }            from '../lib/supabase'
+import { supabase, supabaseAuth } from '../lib/supabase'
 import { useAuthStore }        from '../store/authStore'
 
 export default function Auth() {
   const navigate      = useNavigate()
   const { user }      = useAuthStore()
-  const [tab, setTab] = useState('login')  // 'login' | 'register'
+  const [tab, setTab] = useState('login')
 
-  // Si ya está autenticado, redirigir
   useEffect(() => {
     if (user) navigate('/account', { replace: true })
   }, [user, navigate])
 
-  // Formulario login
-  const [loginForm,  setLoginForm]  = useState({ email: '', password: '' })
-  const [loginError, setLoginError] = useState('')
+  const [loginForm,    setLoginForm]    = useState({ email: '', password: '' })
+  const [loginError,   setLoginError]   = useState('')
   const [loginLoading, setLoginLoading] = useState(false)
 
   async function handleLogin() {
     setLoginLoading(true)
     setLoginError('')
     
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabaseAuth.auth.signInWithPassword({
       email:    loginForm.email.trim(),
       password: loginForm.password,
     })
     
     if (error) {
-      console.error('Login error:', error)
       setLoginError(
         error.message === 'Invalid login credentials'
           ? 'Email o contraseña incorrectos.'
@@ -37,8 +34,6 @@ export default function Auth() {
       )
       setLoginLoading(false)
     } else {
-      console.log('Login successful:', data)
-      // Obtener perfil y actualizar store
       if (data.user) {
         try {
           const { data: profile, error: profileError } = await supabase
@@ -48,11 +43,8 @@ export default function Auth() {
             .single()
           
           if (!profileError && profile) {
-            // Actualizar store manualmente
             useAuthStore.getState().setUser(data.user)
             useAuthStore.getState().setProfile(profile)
-            // La navegación se ejecutará automáticamente por el useEffect
-            console.log('Profile loaded, redirecting to /account')
           }
         } catch (err) {
           console.error('Error loading profile:', err)
@@ -62,9 +54,8 @@ export default function Auth() {
     }
   }
 
-  // Formulario registro
-  const [regForm,  setRegForm]  = useState({ full_name: '', email: '', password: '', confirm: '' })
-  const [regErrors, setRegErrors] = useState({})
+  const [regForm,    setRegForm]    = useState({ full_name: '', email: '', password: '', confirm: '' })
+  const [regErrors,  setRegErrors]  = useState({})
   const [regLoading, setRegLoading] = useState(false)
   const [regSuccess, setRegSuccess] = useState(false)
 
@@ -85,7 +76,7 @@ export default function Auth() {
     setRegLoading(true)
     setRegErrors({})
 
-    const { error } = await supabase.auth.signUp({
+    const { error } = await supabaseAuth.auth.signUp({
       email:    regForm.email.trim(),
       password: regForm.password,
       options: {
@@ -101,6 +92,7 @@ export default function Auth() {
     setRegLoading(false)
   }
 
+  // ... resto del JSX igual, no cambia nada visual
   return (
     <div style={{
       minHeight: 'calc(100vh - var(--nav-height))',

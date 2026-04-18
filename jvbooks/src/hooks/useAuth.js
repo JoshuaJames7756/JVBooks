@@ -1,6 +1,6 @@
 // src/hooks/useAuth.js
 import { useEffect, useRef } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase, supabaseAuth } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import { useWishlistStore } from '../store/wishlistStore'
 
@@ -32,12 +32,11 @@ export function useAuthInit() {
 
     const initSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession()
+        const { data: { session } } = await supabaseAuth.auth.getSession()
         if (session?.user) {
           setUser(session.user)
           const profile = await fetchProfile(session.user.id)
           if (profile) setProfile(profile)
-          // Cargar wishlist remota al iniciar sesión existente
           useWishlistStore.getState().loadRemote(session.user.id)
         } else {
           setUser(null)
@@ -52,17 +51,15 @@ export function useAuthInit() {
 
     initSession()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    const { data: { subscription } } = supabaseAuth.auth.onAuthStateChange(
       async (_event, session) => {
         setUser(session?.user ?? null)
         if (session?.user) {
           const profile = await fetchProfile(session.user.id)
           if (profile) setProfile(profile)
-          // Cargar wishlist remota en cada cambio de sesión (login)
           useWishlistStore.getState().loadRemote(session.user.id)
         } else {
           setProfile(null)
-          // Limpiar wishlist remota al cerrar sesión
           useWishlistStore.getState().clearRemote()
         }
       }
