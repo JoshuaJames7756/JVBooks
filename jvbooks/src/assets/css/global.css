@@ -1024,10 +1024,13 @@ small { font-size: 13px; color: var(--jv-ink-muted); }
 @media (max-width: 768px) {
   /* Hacemos visible el botón hamburguesa */
     .navbar__overlay {
-     position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 1000;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 280px; /* exacto ancho del drawer */
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1000;
   }
   .hamburger-btn {
     display: flex;
