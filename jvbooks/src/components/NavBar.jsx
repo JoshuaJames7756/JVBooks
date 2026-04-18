@@ -1,5 +1,5 @@
 // src/components/NavBar.jsx
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { useAuthStore }   from '../store/authStore'
 import { useCartStore }   from '../store/cartStore'
@@ -10,6 +10,11 @@ export default function NavBar() {
   const totalQty = items.reduce((acc, i) => acc + i.qty, 0)
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [isOpen])
 
   async function handleSignOut() {
     setIsOpen(false)
@@ -31,7 +36,7 @@ export default function NavBar() {
           </span>
         </Link>
 
-        {/* 2. CENTRO: Navegación (Se posicionará al centro/derecha en PC) */}
+        {/* 2. CENTRO: Navegación */}
         <nav className={`navbar__nav ${isOpen ? 'is-open' : ''}`}>
           <NavLink to="/catalog"  className="navbar__link" onClick={closeMenu}>Catálogo</NavLink>
           <NavLink to="/wishlist" className="navbar__link" onClick={closeMenu}>Wishlist</NavLink>
@@ -39,16 +44,15 @@ export default function NavBar() {
             <NavLink to="/admin" className="navbar__link" onClick={closeMenu}>Admin</NavLink>
           )}
 
-          {/* Botones exclusivos para el menú móvil */}
           <div className="navbar__mobile-actions">
-             {user ? (
-               <>
+            {user ? (
+              <>
                 <Link to="/account" className="btn btn-ghost btn-block" onClick={closeMenu}>Mi cuenta</Link>
                 <button className="btn btn-danger btn-block" onClick={handleSignOut}>Salir</button>
-               </>
-             ) : (
-                <Link to="/auth" className="btn btn-primary btn-block" onClick={closeMenu}>Iniciar sesión</Link>
-             )}
+              </>
+            ) : (
+              <Link to="/auth" className="btn btn-primary btn-block" onClick={closeMenu}>Iniciar sesión</Link>
+            )}
           </div>
         </nav>
 
@@ -64,7 +68,6 @@ export default function NavBar() {
             )}
           </button>
 
-          {/* Botones exclusivos para PC */}
           <div className="navbar__desktop-auth">
             {user ? (
               <div className="flex flex-gap-2">
@@ -76,7 +79,6 @@ export default function NavBar() {
             )}
           </div>
 
-          {/* Botón Hamburguesa (Solo móvil) */}
           <button className="hamburger-btn" onClick={() => setIsOpen(!isOpen)}>
             <span className={`bar ${isOpen ? 'open' : ''}`}></span>
             <span className={`bar ${isOpen ? 'open' : ''}`}></span>
@@ -85,6 +87,12 @@ export default function NavBar() {
         </div>
 
       </div>
+
+      {/* Overlay */}
+      {isOpen && (
+        <div className="navbar__overlay" onClick={closeMenu} />
+      )}
+
     </header>
   )
 }
