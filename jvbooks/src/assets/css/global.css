@@ -1026,6 +1026,7 @@ small { font-size: 13px; color: var(--jv-ink-muted); }
     .navbar__overlay {
     position: fixed;
     inset: 0;
+    right: 280px; /* deja libre el ancho del drawer */
     background: rgba(0, 0, 0, 0.4);
     z-index: 999;
   }
