@@ -984,13 +984,11 @@ small { font-size: 13px; color: var(--jv-ink-muted); }
     width: 100%;
   }
 
-  /* 1. El logo mantiene su tamaño natural a la izquierda */
   .navbar__logo {
-    flex: 0 0 auto; 
+    flex: 0 0 auto;
   }
 
-  /* 2. El nav se expande y centra su contenido */
-  .navbar__nav {
+  .navbar__nav--desktop {
     display: flex !important;
     position: static;
     height: auto;
@@ -999,14 +997,15 @@ small { font-size: 13px; color: var(--jv-ink-muted); }
     padding: 0;
     box-shadow: none;
     flex-direction: row;
-    
-    /* CENTRADO REAL */
-    flex: 1; /* Ocupa el espacio disponible entre logo y acciones */
-    justify-content: center; 
-    gap: var(--space-8); /* Espacio generoso entre links */
+    flex: 1;
+    justify-content: center;
+    gap: var(--space-8);
   }
 
-  /* 3. Las acciones se mantienen a la derecha */
+  .navbar__nav--mobile {
+    display: none !important;
+  }
+
   .navbar__actions {
     flex: 0 0 auto;
     display: flex;
@@ -1014,7 +1013,6 @@ small { font-size: 13px; color: var(--jv-ink-muted); }
     gap: var(--space-4);
   }
 
-  /* Limpieza de elementos móviles */
   .navbar__mobile-actions,
   .hamburger-btn {
     display: none !important;
@@ -1033,8 +1031,12 @@ small { font-size: 13px; color: var(--jv-ink-muted); }
   .bar.open:nth-child(2) { opacity: 0; }
   .bar.open:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-  .navbar__nav {
-    display: flex !important;
+  .navbar__nav--desktop {
+    display: none !important;
+  }
+
+  .navbar__nav--mobile {
+    display: flex;
     position: fixed;
     top: 0;
     right: -280px;
@@ -1048,7 +1050,7 @@ small { font-size: 13px; color: var(--jv-ink-muted); }
     z-index: 1100;
   }
 
-  .navbar__nav.is-open {
+  .navbar__nav--mobile.is-open {
     transform: translateX(-280px);
   }
 

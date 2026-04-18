@@ -1,8 +1,8 @@
 // src/components/NavBar.jsx
 import { useState, useEffect } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
-import { useAuthStore }   from '../store/authStore'
-import { useCartStore }   from '../store/cartStore'
+import { useAuthStore } from '../store/authStore'
+import { useCartStore } from '../store/cartStore'
 
 export default function NavBar() {
   const { user, profile, signOut } = useAuthStore()
@@ -37,24 +37,13 @@ export default function NavBar() {
             </span>
           </Link>
 
-          {/* 2. CENTRO: Navegación */}
-          <nav className={`navbar__nav ${isOpen ? 'is-open' : ''}`}>
-            <NavLink to="/catalog"  className="navbar__link" onClick={closeMenu}>Catálogo</NavLink>
-            <NavLink to="/wishlist" className="navbar__link" onClick={closeMenu}>Wishlist</NavLink>
+          {/* 2. CENTRO: Nav — solo desktop, en móvil va fuera del header */}
+          <nav className="navbar__nav navbar__nav--desktop">
+            <NavLink to="/catalog"  className="navbar__link">Catálogo</NavLink>
+            <NavLink to="/wishlist" className="navbar__link">Wishlist</NavLink>
             {profile?.role === 'admin' && (
-              <NavLink to="/admin" className="navbar__link" onClick={closeMenu}>Admin</NavLink>
+              <NavLink to="/admin" className="navbar__link">Admin</NavLink>
             )}
-
-            <div className="navbar__mobile-actions">
-              {user ? (
-                <>
-                  <Link to="/account" className="btn btn-ghost btn-block" onClick={closeMenu}>Mi cuenta</Link>
-                  <button className="btn btn-danger btn-block" onClick={handleSignOut}>Salir</button>
-                </>
-              ) : (
-                <Link to="/auth" className="btn btn-primary btn-block" onClick={closeMenu}>Iniciar sesión</Link>
-              )}
-            </div>
           </nav>
 
           {/* 3. DERECHA: Carrito y Auth Desktop */}
@@ -90,7 +79,27 @@ export default function NavBar() {
         </div>
       </header>
 
-      {/* Overlay fuera del header */}
+      {/* DRAWER MÓVIL — fuera del header para escapar del stacking context */}
+      <nav className={`navbar__nav navbar__nav--mobile ${isOpen ? 'is-open' : ''}`}>
+        <NavLink to="/catalog"  className="navbar__link" onClick={closeMenu}>Catálogo</NavLink>
+        <NavLink to="/wishlist" className="navbar__link" onClick={closeMenu}>Wishlist</NavLink>
+        {profile?.role === 'admin' && (
+          <NavLink to="/admin" className="navbar__link" onClick={closeMenu}>Admin</NavLink>
+        )}
+
+        <div className="navbar__mobile-actions">
+          {user ? (
+            <>
+              <Link to="/account" className="btn btn-ghost btn-block" onClick={closeMenu}>Mi cuenta</Link>
+              <button className="btn btn-danger btn-block" onClick={handleSignOut}>Salir</button>
+            </>
+          ) : (
+            <Link to="/auth" className="btn btn-primary btn-block" onClick={closeMenu}>Iniciar sesión</Link>
+          )}
+        </div>
+      </nav>
+
+      {/* Overlay */}
       {isOpen && (
         <div className="navbar__overlay" onClick={closeMenu} />
       )}
