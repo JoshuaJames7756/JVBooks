@@ -1024,11 +1024,10 @@ small { font-size: 13px; color: var(--jv-ink-muted); }
 @media (max-width: 768px) {
   /* Hacemos visible el botón hamburguesa */
     .navbar__overlay {
-    position: fixed;
+     position: fixed;
     inset: 0;
-    right: 280px; /* deja libre el ancho del drawer */
     background: rgba(0, 0, 0, 0.4);
-    z-index: 999;
+    z-index: 1000;
   }
   .hamburger-btn {
     display: flex;
@@ -1052,7 +1051,7 @@ small { font-size: 13px; color: var(--jv-ink-muted); }
     padding: 80px var(--space-6) var(--space-6);
     box-shadow: -5px 0 20px rgba(61, 32, 16, 0.15);
     transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000;
+    z-index: 1001;
   }
 
   /* Cuando JS añade la clase .is-open, el menú entra */
