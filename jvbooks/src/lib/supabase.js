@@ -8,9 +8,9 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: false,
-  }
+  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+})
+
+export const supabaseAuth = createClient(supabaseUrl, supabaseKey, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'jvbooks-auth' }
 })
