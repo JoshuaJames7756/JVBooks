@@ -46,6 +46,8 @@ function RequireAdmin({ children }) {
 
 // ── Root ───────────────────────────────────────────────────
 export default function App() {
+  useAuthInit()  // ← aquí
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -58,7 +60,6 @@ export default function App() {
 
 // ── Rutas ──────────────────────────────────────────────────
 function AppRoutes() {
-  useAuthInit()
 
   const { pathname } = useLocation()
   const isAdmin = pathname.startsWith('/admin')
