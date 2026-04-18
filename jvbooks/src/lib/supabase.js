@@ -13,6 +13,5 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: false,
-    lock: 'tab'
   }
 })
