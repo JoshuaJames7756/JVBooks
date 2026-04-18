@@ -1022,49 +1022,44 @@ small { font-size: 13px; color: var(--jv-ink-muted); }
 }
 
 @media (max-width: 768px) {
-  /* Hacemos visible el botón hamburguesa */
-  .navbar__overlay {
-    position: fixed;
-    top: 0;
-    inset: 0;
-    left: 0;
-    bottom: 0;
-    right: 280px; /* exacto ancho del drawer */
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 1000;
-  }
+
   .hamburger-btn {
     display: flex;
-    z-index: 1003 !important;
+    position: relative;
+    z-index: 1003;
   }
 
-  /* Animación del botón cuando el menú está abierto */
   .bar.open:nth-child(1) { transform: translateY(8px) rotate(45deg); }
   .bar.open:nth-child(2) { opacity: 0; }
   .bar.open:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-  /* Transformamos el Navbar en un Drawer (Panel lateral) */
   .navbar__nav {
-    display: flex !important; /* Forzamos flex */
+    display: flex !important;
     position: fixed;
     top: 0;
-    right: -100%; /* Empieza fuera de la pantalla a la derecha */
+    right: -280px; /* escondido a la derecha */
     width: 280px;
     height: 100vh;
     background: var(--jv-ivory);
     flex-direction: column;
     padding: 80px var(--space-6) var(--space-6);
     box-shadow: -5px 0 20px rgba(61, 32, 16, 0.15);
-    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1002 !important;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2000;
   }
 
-  /* Cuando JS añade la clase .is-open, el menú entra */
   .navbar__nav.is-open {
-    right: 0;
+    transform: translateX(-280px); /* entra desde la derecha */
   }
 
-  /* Ajustes de los links dentro del menú móvil */
+  .navbar__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 1500;
+  }
+
   .navbar__link {
     font-size: 18px;
     padding-block: var(--space-4);
@@ -1072,14 +1067,12 @@ small { font-size: 13px; color: var(--jv-ink-muted); }
     width: 100%;
   }
 
-  /* Ocultamos los botones de auth de la cabecera original para que no choquen */
   .navbar__desktop-auth {
     display: none;
   }
 
-  /* Estilos para las acciones dentro del Drawer */
   .navbar__mobile-actions {
-    margin-top: auto; /* Los manda al fondo del menú */
+    margin-top: auto;
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
