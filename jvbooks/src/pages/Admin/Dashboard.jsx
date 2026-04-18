@@ -2,15 +2,14 @@
 import { useEffect } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
-import { supabase } from '../../lib/supabase'
+import { supabaseData } from '../../lib/supabase'
 import AdminLayout from '../../components/AdminLayout'
 
-// ── Queries (Métricas y Datos) ─────────────────────────────
 async function fetchMetrics() {
   const [ordersRes, booksRes, usersRes] = await Promise.all([
-    supabase.from('orders').select('id, total, status, created_at'),
-    supabase.from('books').select('id, stock'),
-    supabase.from('profiles').select('id', { count: 'exact', head: true }),
+    supabaseData.from('orders').select('id, total, status, created_at'),
+    supabaseData.from('books').select('id, stock'),
+    supabaseData.from('profiles').select('id', { count: 'exact', head: true }),
   ])
 
   const orders = ordersRes.data || []
@@ -33,7 +32,7 @@ async function fetchMetrics() {
 }
 
 async function fetchRecentOrders() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseData
     .from('orders')
     .select(`
       id,
@@ -49,8 +48,6 @@ async function fetchRecentOrders() {
   return data
 }
 
-// ── Componente de Tarjeta (MetricCard) ──────────────────────
-// Ajustado para ocupar el 100% de su celda
 function MetricCard({ label, value, sub, accent }) {
   return (
     <div className="card" style={{ 
@@ -72,7 +69,6 @@ function MetricCard({ label, value, sub, accent }) {
   )
 }
 
-// ── Página Principal ───────────────────────────────────────
 export default function AdminDashboard() {
   const queryClient = useQueryClient()
 
@@ -87,21 +83,20 @@ export default function AdminDashboard() {
   })
 
   useEffect(() => {
-    const channel = supabase
+    const channel = supabaseData
       .channel('db-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
         queryClient.invalidateQueries({ queryKey: ['admin-metrics'] })
         queryClient.invalidateQueries({ queryKey: ['admin-recent-orders'] })
       })
       .subscribe()
-    return () => supabase.removeChannel(channel)
+    return () => supabaseData.removeChannel(channel)
   }, [queryClient])
 
   return (
     <AdminLayout title="Dashboard">
       <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '32px' }}>
         
-        {/* GRILLA DE MÉTRICAS: Ocupa todo el ancho y se ajusta sola */}
         {loadingMetrics ? (
           <div className="loading-page"><span className="spinner" /></div>
         ) : (
@@ -135,7 +130,6 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* SECCIÓN INFERIOR: TABLA Y ALERTAS */}
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
@@ -143,7 +137,6 @@ export default function AdminDashboard() {
           width: '100%'
         }}>
           
-          {/* TABLA DE PEDIDOS */}
           <div style={{ width: '100%', minWidth: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
               <h3 style={{ margin: 0 }}>Pedidos recientes</h3>
@@ -176,7 +169,6 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* ALERTAS DE STOCK */}
           <div style={{ width: '100%', minWidth: 0 }}>
             <h3 style={{ marginBottom: '16px' }}>Stock Crítico</h3>
             <div className="card" style={{ padding: '20px' }}>
